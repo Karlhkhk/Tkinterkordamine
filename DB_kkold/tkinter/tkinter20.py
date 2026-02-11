@@ -55,92 +55,9 @@ search_button.pack(side=tk.LEFT)
 # Avab lisamise faili
 def add_data():
     subprocess.run(["python", "lisa_kasutaja.py"])
-# Loo nupp, mis avab teise akna
-open_button = tk.Button(root, text="Lisa andmeid", command=add_data)
-open_button.pack(pady=20)
-
-# Funktsioon, mis näitab valitud rea ID-d
-def on_update():
-    selected_item = tree.selection()  # Võta valitud rida
-    if selected_item:
-        record_id = selected_item[0]  # iid (ID)
-        print(f"Valitud ID: {record_id}")
-    else:
-        print("Vali kõigepealt rida!")
-    # Funktsioon, mis avab uue akna andmete muutmiseks
-def open_update_window(record_id):
-    # Loo uus aken
-    update_window = tk.Toplevel(root)
-    update_window.title("Muuda kasutaja andmeid")
-
-    # Loo andmebaasi ühendus ja toomine olemasolevad andmed
-    conn = sqlite3.connect('kkold.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT first_name, last_name, email, phone, image FROM users WHERE id=?", (record_id,))
-    record = cursor.fetchone()
-    conn.close()
-
-    # Veergude nimed ja vastavad sisestusväljad
-    labels = ["Eesnimi", "Perekonnanimi", "Email", "Telefon", "Pilt"]
-    entries = {}
-
-    for i, label in enumerate(labels):
-        tk.Label(update_window, text=label).grid(row=i, column=0, padx=10, pady=5, sticky=tk.W)
-        entry = tk.Entry(update_window, width=50)
-        entry.grid(row=i, column=1, padx=10, pady=5)
-        entry.insert(0, record[i])
-        entries[label] = entry
-
-    # Salvestamise nupp
-    save_button = tk.Button(update_window, text="Salvesta", command=lambda: update_record(record_id, entries, update_window))
-    save_button.grid(row=len(labels), column=0, columnspan=2, pady=10)
-    # Funktsioon, mis näitab valitud rea ID-d ja avab muutmise vormi
-def on_update():
-    selected_item = tree.selection()  # Võta valitud rida
-    if selected_item:
-        record_id = selected_item[0]  # iid (ID)
-        open_update_window(record_id)
-    else:
-        messagebox.showwarning("Valik puudub", "Palun vali kõigepealt rida!")
-        # Funktsioon, mis avab uue akna andmete muutmiseks
-def open_update_window(record_id):
-    # Loo uus aken
-    update_window = tk.Toplevel(root)
-    update_window.title("Muuda kasutaja andmeid")
-    # Funktsioon, mis uuendab andmed andmebaasis
-def update_record(record_id, entries, window):
-   # Koguge andmed sisestusväljadest
-    first_name = entries["Eesnimi"].get()
-    last_name = entries["Perekonnanimi"].get()
-    email = entries["Email"].get()
-    phone = entries["Telefon"].get()
-    image = entries["Pilt"].get()
-
-    # Andmete uuendamine andmebaasis
-    conn = sqlite3.connect('kkold.db')
-    cursor = conn.cursor()
-    cursor.execute("""
-    UPDATE users
-    SET first_name=?, last_name=?, email=?, phone=?, image=?
-    WHERE id=?
-    """, (first_name, last_name, email, phone, image, record_id))
-    conn.commit()
-    conn.close()
-
-    # Värskenda Treeview tabelit
-    load_data_from_db(tree)
-
-    # Sulge muutmise aken
-    window.destroy()
-
-    messagebox.showinfo("Salvestamine", "Andmed on edukalt uuendatud!")
-
-# Lisa Uuenda nupp, mis näitab selekteeritud rea ID-d
-update_button = tk.Button(root, text="Uuenda", command=on_update)
-update_button.pack(pady=10)
 
 
-
+    
 #Funktsioon, mis laadib andmed SQLite andmebaasist ja sisestab need Treeview tabelisse
 def load_data_from_db(tree, search_query=""):
     # Puhasta Treeview tabel enne uute andmete lisamist
