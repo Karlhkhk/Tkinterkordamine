@@ -67,7 +67,8 @@ def open_update_window(record_id):
         tk.Label(update_window, text=label_text).grid(row=i, column=0, padx=10, pady=5)
         entry = tk.Entry(update_window, width=40)
         entry.grid(row=i, column=1, padx=10, pady=5)
-        entry.insert(0, record[i])
+        if record[i] is not None:
+            entry.insert(0, record[i])
         entries[label_text] = entry
 
     save_button = tk.Button(update_window, text="Salvesta", 
